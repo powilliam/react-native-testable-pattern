@@ -1,7 +1,15 @@
 import React, {Fragment} from 'react';
-import {Text, Image, TouchableWithoutFeedback} from 'react-native';
+import {Image, TouchableWithoutFeedback} from 'react-native';
+
+import {Text} from './text';
 
 import {Organization} from '../entities/organization';
+
+const imageStyle = {
+  width: 48,
+  height: 48,
+  borderRadius: 12,
+};
 
 export interface OrganizationDetailsProps {
   readonly organization?: Organization | null;
@@ -22,11 +30,7 @@ export function OrganizationDetails({
           <TouchableWithoutFeedback
             testID={`${organization.name.toLocaleLowerCase()}-avatar`}
             onPress={() => onNavigateToOrganization(organization)}>
-            <Image
-              source={{uri: organization.avatar_url}}
-              width={48}
-              height={48}
-            />
+            <Image source={{uri: organization.avatar_url}} style={imageStyle} />
           </TouchableWithoutFeedback>
           <Text>Login: {organization.login}</Text>
           <Text>Name: {organization.name}</Text>

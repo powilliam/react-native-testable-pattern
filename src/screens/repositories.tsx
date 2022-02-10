@@ -1,9 +1,8 @@
 import React from 'react';
 import {
+  StyleSheet,
   SafeAreaView,
   View,
-  Text,
-  TouchableOpacity,
   StyleProp,
   ViewStyle,
 } from 'react-native';
@@ -19,19 +18,23 @@ import {
   RepositoriesList,
   RepositoriesListProps,
 } from '../components/repositories';
+import {Button} from '../components/button';
+import {Text} from '../components/text';
+
+import {withSystemColors} from '../hocs';
+
+import {Colors} from '../themes';
 
 interface RepositoriesScreenProps
   extends Omit<OrganizationDetailsProps, 'organization'>,
     Omit<RepositoriesListProps, 'repositories'> {
   readonly repositoriesState: RepositoriesScreenComponentState;
   readonly organizationState: OrganizationScreenComponentState;
+  readonly colors: Colors;
 }
 
 const css: StyleProp<ViewStyle> = {
   flex: 1,
-  backgroundColor: 'white',
-  alignItems: 'center',
-  justifyContent: 'center',
 };
 
 /**
@@ -47,7 +50,8 @@ const css: StyleProp<ViewStyle> = {
  *
  * UI = F(State) :)
  */
-export default function RepositoriesScreen({
+function RepositoriesScreen({
+  colors,
   repositoriesState: {
     states: {isLoadingRepositories, repositories},
     callbacks: {onFetchRepositories},
@@ -59,17 +63,12 @@ export default function RepositoriesScreen({
   onNavigateToOrganization,
   onNavigateToRepository,
 }: RepositoriesScreenProps) {
+  const styles = makeStyles(colors);
   const isLoading = isLoadingOrganization || isLoadingRepositories;
 
   return (
-    <SafeAreaView style={css}>
-      <View>
-        <TouchableOpacity
-          onPress={() =>
-            Promise.all([onFetchOrganization(), onFetchRepositories()])
-          }>
-          <Text>Fetch</Text>
-        </TouchableOpacity>
+    <SafeAreaView style={[css, styles.safeArea]}>
+      <View style={styles.listContainer}>
         {isLoading ? (
           <Text>loading...</Text>
         ) : (
@@ -85,6 +84,40 @@ export default function RepositoriesScreen({
           </React.Fragment>
         )}
       </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          onPress={() =>
+            Promise.all([onFetchOrganization(), onFetchRepositories()])
+          }>
+          Fetch
+        </Button>
+      </View>
     </SafeAreaView>
   );
 }
+
+export default withSystemColors(RepositoriesScreen);
+
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    safeArea: {
+      backgroundColor: colors.surface,
+    },
+    listContainer: {
+      flex: 3,
+      backgroundColor: colors.primaryContainer,
+      borderRadius: 12,
+      margin: 16,
+      paddingHorizontal: 16,
+      paddingTop: 16,
+    },
+    buttonContainer: {
+      flex: 1,
+      margin: 16,
+      justifyContent: 'flex-end',
+    },
+    text: {
+      color: colors.onSurface,
+      fontSize: 16,
+    },
+  });

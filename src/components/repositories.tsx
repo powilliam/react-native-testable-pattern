@@ -1,5 +1,7 @@
 import React from 'react';
-import {ScrollView, Text, TouchableOpacity} from 'react-native';
+import {ScrollView, TouchableOpacity} from 'react-native';
+
+import {Text} from './text';
 
 import {Repository} from '../entities/repository';
 
@@ -15,7 +17,7 @@ export function RepositoriesList({
   const isEmpty = repositories.length === 0;
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       {isEmpty ? (
         <Text>Empty</Text>
       ) : (
